@@ -1,4 +1,7 @@
+from random import random
+
 import pygame
+import random
 
 pygame.init()
 
@@ -119,6 +122,21 @@ class PlayerBoard:
                 output.remove(self.tiles[x][y].sides[i].name)
         return output
 
+class TileBoard:
+    tiles = [[Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((100, 100))) for i in range(0,2)] for j in range(0,2)]
+    image = pygame.Surface((800, 800))
+    numOfTiles = 0
+    pos = 0
+
+    def __init__(self, tileList, pos):
+        self.pos = pos
+        for i in [0,1]:
+            for j in [0,1]:
+                self.tiles[i][j] = tileList[random.randrange(0,len(tileList))]
+                self.image.blit(self.tiles[i][j].image, (100 * i, 100 * j))
+                self.numOfTiles = self.numOfTiles + 1
+
+
 
 
 
@@ -154,6 +172,7 @@ board.placeTile(tile3,1,3)
 a = board.hasComplete(1,3)
 print(a)
 
+b = TileBoard([tile1,tile2], 0)
 
 while running:
     for event in pygame.event.get():
@@ -162,6 +181,6 @@ while running:
 
     screenLayer = pygame.Surface((800, 800))
 
-    pygame.Surface.blit(screen, board.image, (0, 0))
+    pygame.Surface.blit(screen, b.image, (0, 0))
 
     pygame.display.update()
