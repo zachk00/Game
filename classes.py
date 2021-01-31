@@ -138,10 +138,15 @@ class TileBoard:
 
 
 class Player:
-    stockpile = []
+    chicken_total = 0
+    herb_total = 0
+    fish_total = 0
+    grape_total = 0
+    bread_total = 0
+    gold_total = 0
+
     score = 0
-    x = 0
-    y = 0
+    
     board = PlayerBoard()
     pos = 1
 
@@ -160,10 +165,29 @@ class Player:
             else:
                 self.pos -= 1
 
+    def add_score(self, score):
+        self.score += score
+
+    def add_resources(self, list_resources):
+        for resource in list_resources:
+            if resource == "herb":
+                self.herb_total +=1
+            elif resource == "fish":
+                self.fish_total +=1
+            elif resource == "grape":
+                self.grape_total +=1
+            elif resource == "chicken":
+                self.chicken_total +=1
+            elif resource == "bread":
+                self.bread_total +=1
+            else:
+                self.gold_total += 1
+
+
+
     def get_board(self):
         return self.board
 
     def get_pos(self):
         return self.pos
-
 
