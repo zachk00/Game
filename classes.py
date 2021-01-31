@@ -1,3 +1,4 @@
+
 from random import random
 
 import pygame
@@ -18,7 +19,6 @@ class Tile:
     sides = [Building(""), Building(""), Building(""), Building("")]
     # up, right, down, left
     polygon = pygame.Surface((100, 100))
-    pygame.draw.polygon(polygon, pygame.Color(100, 00, 00), [(100, 100), (0, 100), (0, 0), (100, 0)])
 
     image = polygon
 
@@ -136,17 +136,22 @@ class TileBoard:
                 self.image.blit(self.tiles[i][j].image, (100 * i, 100 * j))
                 self.numOfTiles = self.numOfTiles + 1
 
+    def popTile(self, x, y):
+        out = self.tiles[x][y]
+        self.tiles[x][y] = Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((100, 100)))
+        self.numOfTiles = self.numOfTiles - 1
+        for i in [0,1]:
+            for j in [0,1]:
+                self.image.blit(self.tiles[i][j].image, (100 * i, 100 * j))
+        return out
+
+
 
 class Player:
-    chicken_total = 0
-    herb_total = 0
-    fish_total = 0
-    grape_total = 0
-    bread_total = 0
-    gold_total = 0
-
+    stockpile = []
     score = 0
-    
+    x = 0
+    y = 0
     board = PlayerBoard()
     pos = 1
 
@@ -165,29 +170,60 @@ class Player:
             else:
                 self.pos -= 1
 
-    def add_score(self, score):
-        self.score += score
-
-    def add_resources(self, list_resources):
-        for resource in list_resources:
-            if resource == "herb":
-                self.herb_total +=1
-            elif resource == "fish":
-                self.fish_total +=1
-            elif resource == "grape":
-                self.grape_total +=1
-            elif resource == "chicken":
-                self.chicken_total +=1
-            elif resource == "bread":
-                self.bread_total +=1
-            else:
-                self.gold_total += 1
-
-
-
     def get_board(self):
         return self.board
 
     def get_pos(self):
         return self.pos
+
+class ScoreCard:
+
+
+    def __init__(self):
+        pass
+
+screen = pygame.display.set_mode((800, 600))
+
+running = True
+rectangle = pygame.Rect(100, 100, 100, 100)
+
+screenLayer = pygame.Surface((100, 100))
+pygame.draw.polygon(screenLayer, pygame.Color(00, 100, 00), [(100, 100), (0, 100), (0, 0), (100, 0)])
+
+tile1 = Tile([Building("grass"), Building("grass"), Building("blue"), Building("grass")], pygame.image.load("testImage.png"))
+tile2 = Tile([Building("blue"), Building("grass"), Building("blue"), Building("grass")], pygame.image.load("testImage2.png"))
+tile3 = Tile([Building("grass"), Building("grass"), Building("blue"), Building("grass")], pygame.image.load("testImage.png"))
+
+board = PlayerBoard()
+
+for i in [1,4] :
+    for j in [1] :
+        board.placeTile(tile1, i, j)
+
+
+board.placeTile(tile2,1,2)
+
+tile3.rotateTile("left")
+tile3.rotateTile("left")
+
+board.placeTile(tile3,1,3)
+board.placeTile(tile3,1,3)
+
+
+a = board.hasComplete(1,3)
+print(a)
+
+b = TileBoard([tile1,tile2], 0)
+b.popTile(0, 0)
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    screenLayer = pygame.Surface((800, 800))
+
+    pygame.Surface.blit(screen, b.image, (0, 0))
+
+    pygame.display.update()
+    pygame.time.delay(10)
 
