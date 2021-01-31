@@ -122,9 +122,60 @@ class PlayerBoard:
                 output.remove(self.tiles[x][y].sides[i].name)
         return output
 
+    def buildingSizeHelper(self, x, y, avoid, name, sum):
+        l = [0,1,2,3]
+        l.remove(avoid)
+
+        for i in l:
+            if (i == 0):
+                adjTile = self.tiles[x][y - 1]
+            elif (i == 1):
+                adjTile = self.tiles[x - 1][y]
+            elif (i == 2):
+                adjTile = self.tiles[x][y + 1]
+            else:
+                adjTile = self.tiles[x + 1][y]
+            if self.tiles[x][y].sides[i].name == name:
+                if (i == 0):
+                    sum = sum + self.buildingSizeHelper(x, y - 1, (i + 2) % 4, name, sum)
+                elif (i == 1):
+                    sum = sum + self.buildingSizeHelper(x - 1, y, (i + 2) % 4, name, sum)
+                elif (i == 2):
+                    sum = sum + self.buildingSizeHelper(x, y + 1, (i + 2) % 4, name, sum)
+                else:
+                    sum = sum + self.buildingSizeHelper(x + 1, y, (i + 2) % 4, name, sum)
+        return sum + 1
+
+
+    def buildingSize(self, x, y, name):
+        sum = -1
+        if name in self.hasComplete(x,y):
+            sum = 0
+            for i in range(0, 4):
+                if (i == 0):
+                    adjTile = self.tiles[x][y - 1]
+                elif (i == 1):
+                    adjTile = self.tiles[x - 1][y]
+                elif (i == 2):
+                    adjTile = self.tiles[x][y + 1]
+                else:
+                    adjTile = self.tiles[x + 1][y]
+                if self.tiles[x][y].sides[i].name == name:
+                    if (i == 0):
+                        sum = sum + self.buildingSizeHelper(x, y - 1, (i + 2) % 4, name, 0)
+                    elif (i == 1):
+                        sum = sum + self.buildingSizeHelper(x - 1, y, (i + 2) % 4, name, 0)
+                    elif (i == 2):
+                        sum = sum + self.buildingSizeHelper(x, y + 1, (i + 2) % 4, name, 0)
+                    else:
+                        sum = sum + self.buildingSizeHelper(x + 1, y, (i + 2) % 4, name, 0)
+        return sum + 1
+
+
+
 class TileBoard:
     tiles = [[Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((100, 100))) for i in range(0,2)] for j in range(0,2)]
-    image = pygame.Surface((800, 800))
+    image = pygame.Surface((200, 200))
     numOfTiles = 0
     pos = 0
 
@@ -206,15 +257,16 @@ board.placeTile(tile2,1,2)
 tile3.rotateTile("left")
 tile3.rotateTile("left")
 
-board.placeTile(tile3,1,3)
-board.placeTile(tile3,1,3)
+board.placeTile(tile2,1,3)
+board.placeTile(tile3,1,4)
 
 
 a = board.hasComplete(1,3)
 print(a)
+print(board.buildingSize(1,1,"blue"))
 
-b = TileBoard([tile1,tile2], 0)
-b.popTile(0, 0)
+tileBoard = TileBoard([tile1,tile2], 0)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -222,8 +274,8 @@ while running:
 
     screenLayer = pygame.Surface((800, 800))
 
-    pygame.Surface.blit(screen, b.image, (0, 0))
+    pygame.Surface.blit(screen, board.image, (0, 0))
 
     pygame.display.update()
-    pygame.time.delay(10)
+
 
