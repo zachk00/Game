@@ -252,12 +252,12 @@ for i in [1,4] :
         board.placeTile(tile1, i, j)
 
 
-board.placeTile(tile2,1,2)
+board.placeTile(tile2,0,0)
 
 tile3.rotateTile("left")
 tile3.rotateTile("left")
 
-board.placeTile(tile2,1,3)
+board.placeTile(tile2,0,6)
 board.placeTile(tile3,1,4)
 
 
