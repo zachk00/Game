@@ -1,23 +1,22 @@
 import pygame
 import random
 
+pygame.init()
+
 
 class Building:
-    name = ""
-    isComplete = False
 
     def __init__(self, name):
         self.name = name
+        self.isComplete = False
 
 
 class Tile:
-    sides = [Building(""), Building(""), Building(""), Building("")]
-    # up, right, down, left
-    polygon = pygame.Surface((50, 50))
 
-    image = polygon
+    # up, right, down, left
 
     def __init__(self, sides, image):
+        self.image = pygame.Surface((50, 50))
         self.sides = sides
         self.image = image
 
@@ -63,8 +62,10 @@ class PlayerBoard:
         if self.checkPlacement(tile, x, y):
             self.tiles[x][y] = tile
             self.image.blit(tile.image, (50 * x, 50 * y))
+
         else:
             print("illegal move")
+
 
     def hasCompleteHelper(self, x, y, avoid, prevName, output):
         l = [0, 1, 2, 3]
@@ -171,13 +172,12 @@ class PlayerBoard:
 
 
 class TileBoard:
-    tiles = [[Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((50, 50))) for i in
-              range(0, 2)] for j in range(0, 2)]
-    image = pygame.Surface((50, 50))
-    numOfTiles = 0
-    pos = 0
 
     def __init__(self, tileList, pos):
+        self.numOfTiles = 4
+        self.image = pygame.Surface((100, 100))
+        self.tiles = [[Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((50, 50))) for i in
+                       range(0, 2)] for j in range(0, 2)]
         self.pos = pos
         for i in [0, 1]:
             for j in [0, 1]:
@@ -187,7 +187,8 @@ class TileBoard:
 
     def popTile(self, x, y):
         out = self.tiles[x][y]
-        self.tiles[x][y] = Tile([Building(""), Building(""), Building(""), Building("")], pygame.Surface((50, 50)))
+        self.tiles[x][y] = Tile([Building("grass"), Building("grass"), Building("grass"), Building("grass")],
+                                pygame.Surface((50, 50)))
         self.numOfTiles = self.numOfTiles - 1
         for i in [0, 1]:
             for j in [0, 1]:
@@ -196,15 +197,12 @@ class TileBoard:
 
 
 class Player:
-    stockpile = []
-    score = 0
-    x = 0
-    y = 0
-    board = PlayerBoard()
-    pos = 1
 
     def __init__(self):
-        pass
+        self.stockpile = []
+        self.score = 0
+        self.board = PlayerBoard()
+        self.pos = 1
 
     def move(self, direction):
         if direction == 'up':
@@ -229,6 +227,3 @@ class ScoreCard:
 
     def __init__(self):
         pass
-
-
-
